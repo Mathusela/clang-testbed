@@ -2681,6 +2681,8 @@ private:
   ///
   void ParseParenDeclarator(Declarator &D);
 
+  void MaybeParseEffectsSpecification(Declarator &D);
+
   /// ParseFunctionDeclarator - We are after the identifier and have parsed the
   /// declarator D up to a paren, which indicates that we are parsing function
   /// arguments.
@@ -2695,8 +2697,8 @@ private:
   /// For C++, after the parameter-list, it also parses the
   /// cv-qualifier-seq[opt], (C++11) ref-qualifier[opt],
   /// exception-specification[opt], (C++11) attribute-specifier-seq[opt],
-  /// (C++11) trailing-return-type[opt] and (C++2a) the trailing
-  /// requires-clause.
+  /// (C++11) trailing-return-type[opt], (C++2a) the trailing
+  /// requires-clause, and (experimental) the effects specification.
   ///
   /// \verbatim
   /// [C++11] exception-specification:

@@ -7286,6 +7286,9 @@ void Parser::ParseFunctionDeclarator(Declarator &D,
       // after the exception-specification.
       MaybeParseCXX11Attributes(FnAttrs);
 
+      // Maybe parse effects specification
+      MaybeParseEffectsSpecification(D);
+      
       // Parse trailing-return-type[opt].
       LocalEndLoc = EndLoc;
       if (getLangOpts().CPlusPlus11 && Tok.is(tok::arrow)) {
@@ -7340,6 +7343,38 @@ void Parser::ParseFunctionDeclarator(Declarator &D,
                     LocalEndLoc, D, TrailingReturnType, TrailingReturnTypeLoc,
                     &DS),
                 std::move(FnAttrs), EndLoc);
+}
+
+void Parser::MaybeParseEffectsSpecification(Declarator &D) {
+  if (!Tok.is(tok::kw_effects))
+    return;
+  ConsumeToken();
+
+  if (!Tok.is(tok::l_brace)) {
+    // Diag and return
+    Diag(Tok, diag::err_expected_effects_scope);
+    return;
+  }
+
+  SourceLocation lbraceLoc = Tok.getLocation();
+
+  // Parse effects body
+  std::size_t depth{};
+  while (depth > 1 || !Tok.is(tok::r_brace)) {
+    if (Tok.is(tok::l_brace))
+      ++depth;
+    if (Tok.is(tok::r_brace))
+      --depth;
+
+    if (Tok.is(tok::eof)) {
+      Diag(Tok, diag::err_expected_rbrace);
+      Diag(lbraceLoc, diag::note_lbrace_match);
+      return;
+    }
+
+    ConsumeAnyToken();
+  }
+  ConsumeBrace();
 }
 
 bool Parser::ParseRefQualifier(bool &RefQualifierIsLValueRef,

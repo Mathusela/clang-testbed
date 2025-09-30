@@ -245,6 +245,8 @@ def note_unparenthesized_non_primary_expr_in_requires_clause : Note<
 
 def err_expected_fn_body : Error<
   "expected function body after function declarator">;
+def err_expected_effects_scope : Error<
+  "expected effects scope after effects specifier">;
 def warn_attribute_on_function_definition : Warning<
   "GCC does not allow %0 attribute in this position on a function definition">,
   InGroup<GccCompat>;
@@ -270,6 +272,8 @@ def err_invalid_token_after_declarator_suggest_equal : Error<
 def err_expected_statement : Error<"expected statement">;
 def err_expected_lparen_after : Error<"expected '(' after '%0'">;
 def err_expected_rparen_after : Error<"expected ')' after '%0'">;
+def err_expected_rbrace : Error<"expected '}'">;
+def note_lbrace_match : Note<"to match this '{'">;
 def err_expected_punc : Error<"expected ')' or ',' after '%0'">;
 def err_expected_less_after : Error<"expected '<' after '%0'">;
 def err_expected_lbrace_in_compound_literal : Error<
