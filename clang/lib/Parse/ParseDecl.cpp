@@ -7352,29 +7352,13 @@ void Parser::MaybeParseEffectsSpecification(Declarator &D) {
 
   if (!Tok.is(tok::l_brace)) {
     // Diag and return
-    Diag(Tok, diag::err_expected_effects_scope);
+    Diag(Tok, diag::err_expected_effects_body);
     return;
   }
 
-  SourceLocation lbraceLoc = Tok.getLocation();
-
-  // Parse effects body
-  std::size_t depth{};
-  while (depth > 1 || !Tok.is(tok::r_brace)) {
-    if (Tok.is(tok::l_brace))
-      ++depth;
-    if (Tok.is(tok::r_brace))
-      --depth;
-
-    if (Tok.is(tok::eof)) {
-      Diag(Tok, diag::err_expected_rbrace);
-      Diag(lbraceLoc, diag::note_lbrace_match);
-      return;
-    }
-
-    ConsumeAnyToken();
-  }
-  ConsumeBrace();
+  BalancedDelimiterTracker Braces(*this, tok::l_brace);
+  Braces.consumeOpen();
+  Braces.skipToEnd();
 }
 
 bool Parser::ParseRefQualifier(bool &RefQualifierIsLValueRef,
